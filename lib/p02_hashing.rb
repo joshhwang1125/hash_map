@@ -5,7 +5,7 @@ end
 class Array
   def hash
     inject(0) do |accumulator, el|
-      accumulator.hash + el.to_i.hash
+      accumulator.hash + el.to_s.hash
     end
   end
 end
@@ -18,7 +18,8 @@ class String
   end
 end
 
-# class Hash
-#   def hash
-#   end
-# end
+class Hash
+  def hash
+    keys.sort.hash * values.sort.hash
+  end
+end

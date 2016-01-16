@@ -10,15 +10,22 @@ class HashMap
   end
 
   def include?(key)
+    bucket(key).include?(key)
   end
 
   def set(key, val)
+    @count += 1 unless bucket(key).remove(key)
+    bucket(key).insert(key, val)
+    resize! if @count == @store.count
   end
 
   def get(key)
+    bucket(key).get(key)
   end
 
   def delete(key)
+    bucket(key).remove(key)
+    @count -= 1
   end
 
   def each
@@ -42,9 +49,17 @@ class HashMap
   end
 
   def resize!
+    new_store = HashMap.new(@store.count * 2)
+    @store.each do |linked_list|
+      linked_list.each do |link|
+        new_store.set(link.key, link.val)
+      end
+    end
+
+  @store = new_store.store
   end
 
   def bucket(key)
-    # optional but useful; return the bucket corresponding to `key`
+    @store[key.hash % @store.count]
   end
 end
